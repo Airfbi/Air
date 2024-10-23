@@ -1,12 +1,11 @@
-# 欢迎来到我的仓库！
+# Welcome to My Repository!
 
-很高兴让你们来到我的仓库，我的名字是 **Air**。
+I'm glad to have you here in my repository. My name is **Air**.
 
-## 我的个人分享
+## Personal Sharing
 
-这是我分享的应用、程序以及更多的公开脚本仓库。我会分享更多的内容和自己创造的有趣的东西。
+This is where I share my applications, programs, and more public script repositories. I will be sharing more content and interesting things that I've created.
 
-## 联系我
+## Contact Me
 
-想联系我吗？随时通过电子邮件与我联系！记得发给我你想写的回复。邮箱地址： [airdus@foxmail.com](mailto:airdus@foxmail.com)
-
+Want to get in touch? Feel free to contact me via email! Remember to send me your replies. My email address is: [airdus@foxmail.com](mailto:airdus@foxmail.com)
