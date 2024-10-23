@@ -1,2 +1,2 @@
 #Air
-[Mail](airdus@foxmail.com)
+[airdus@foxmail.com]
