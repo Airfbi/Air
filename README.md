@@ -1,10 +1,6 @@
 # Welcome to My Repository!
 
-I'm glad to have you here in my repository. My name is **Air**.
-
-## Personal Sharing
-
-This is where I share my applications, programs, and more public script repositories. I will be sharing more content and interesting things that I've created.
+## Personal Sharing[https://github.com/Airfbi/Air/]
 
 ## Contact Me
 
