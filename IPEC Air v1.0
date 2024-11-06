@@ -1,0 +1,87 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <windows.h>
+#include <iphlpapi.h>
+#include <wininet.h>
+#include <ctime>
+#include <iomanip>
+
+#pragma comment(lib, "iphlpapi.lib")
+#pragma comment(lib, "wininet.lib")
+
+std::string encrypt(const std::string& data, char key) {
+    std::string encrypted = data;
+    for (size_t i = 0; i < data.size(); ++i) {
+        encrypted[i] = data[i] ^ key; 
+    }
+    return encrypted;
+}
+
+std::vector<std::string> 获取本机IP() {
+    std::vector<std::string> ipAddresses;
+    ULONG outBufLen = sizeof(IP_ADAPTER_ADDRESSES);
+    std::vector<BYTE> buffer(outBufLen);
+    ULONG flags = GAA_FLAG_INCLUDE_PREFIX;
+    ULONG family = AF_UNSPEC;
+
+    ULONG result = GetAdaptersAddresses(family, flags, nullptr, reinterpret_cast<PIP_ADAPTER_ADDRESSES>(&buffer[0]), &outBufLen);
+    if (result == NO_ERROR) {
+        PIP_ADAPTER_ADDRESSES pAddresses = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(&buffer[0]);
+        while (pAddresses) {
+            PIP_ADAPTER_UNICAST_ADDRESS pUnicast = pAddresses->FirstUnicastAddress;
+            while (pUnicast) {
+                SOCKADDR *sockaddr = pUnicast->Address.lpSockaddr;
+                char ipString[INET6_ADDRSTRLEN];
+                if (sockaddr->sa_family == AF_INET) {
+                    struct sockaddr_in *s = reinterpret_cast<struct sockaddr_in *>(sockaddr);
+                    inet_ntop(AF_INET, &s->sin_addr, ipString, sizeof(ipString));
+                } else {
+                    struct sockaddr_in6 *s = reinterpret_cast<struct sockaddr_in6 *>(sockaddr);
+                    inet_ntop(AF_INET6, &s->sin6_addr, ipString, sizeof(ipString));
+                }
+                ipAddresses.push_back(ipString);
+                pUnicast = pUnicast->Next;
+            }
+            pAddresses = pAddresses->Next;
+        }
+    } else {
+        std::cerr << "获取适配器地址失败，错误代码: " << result << std::endl;
+    }
+    return ipAddresses;
+}
+
+void 获取系统信息() {
+    SYSTEM_INFO si;
+    GetSystemInfo(&si);
+    std::cout << "处理器架构: " << si.wProcessorArchitecture << std::endl;
+    std::cout << "处理器数量: " << si.dwNumberOfProcessors << std::endl;
+
+    MEMORYSTATUSEX memInfo;
+    memInfo.dwLength = sizeof(MEMORYSTATUSEX);
+    GlobalMemoryStatusEx(&memInfo);
+    std::cout << "总内存: " << memInfo.ullTotalPhys / (1024 * 1024) << " MB" << std::endl;
+    std::cout << "可用内存: " << memInfo.ullAvailPhys / (1024 * 1024) << " MB" << std::endl;
+}
+
+void 获取显示器信息() {
+    HDC hdc = GetDC(NULL);
+    int width = GetDeviceCaps(hdc, HORZRES);
+    int height = GetDeviceCaps(hdc, VERTRES);
+    ReleaseDC(NULL, hdc);
+    std::cout << "显示器分辨率: " << width << " x " << height << std::endl;
+}
+
+void 获取当前时间() {
+    std::time_t now = std::time(nullptr);
+    std::tm localTime = *std::localtime(&now);
+    std::cout << "当前时间: " << std::put_time(&localTime, "%Y-%m-%d %H:%M:%S") << std::endl;
+}
+
+bool 是内网IP(const std::string& ip) {
+    return (ip == "127.0.0.1" || ip.substr(0, 3) == "10." ||
+            ip.substr(0, 8) == "192.168." || ip.substr(0, 7) == "172.16." ||
+            (ip >= "172.16.0.0" && ip <= "172.31.255.255"));
+}
+
+int main
